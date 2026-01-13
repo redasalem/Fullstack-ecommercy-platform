@@ -1,13 +1,11 @@
 {
   "version": 2,
+  "buildCommand": "cd admin && npm install && npm run build",
+  "outputDirectory": "admin/dist",
   "builds": [
     {
       "src": "backend/src/server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "admin/dist/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -16,12 +14,8 @@
       "dest": "backend/src/server.js"
     },
     {
-      "src": "/(.+\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
-      "dest": "admin/dist/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "admin/dist/index.html"
+      "dest": "/admin/dist/index.html"
     }
   ]
 }
