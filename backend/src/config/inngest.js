@@ -1,4 +1,3 @@
-
 import { Inngest } from "inngest";
 
 import { connectDB } from "./db.js";
@@ -8,29 +7,27 @@ import { user } from "../models/user.model.js";
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "ecommerce-app" });
 
-
 // Your new function:
 const syncUser = inngest.createFunction(
   { id: "sync-user" },
   { event: "clerk/user.created" },
   async ({ event, step }) => {
     await connectDB();
-   const {id , email_addresses,first_name,last_name,image_url}=event.data;
+    const { id, email_addresses, first_name, last_name, image_url } =
+      event.data;
 
-   const newUser={
-    clerkId:id,
-    name:`${first_name || ""} ${last_name}` || "user",
-    email:email_addresses[0]?.email_address,
-    imageUrl:image_url,
-    addresses:[],
-     wishlist:[],
-   }
+    const newUser = {
+      clerkId: id,
+      name: `${first_name || ""} ${last_name}` || "user",
+      email: email_addresses[0]?.email_address,
+      imageUrl: image_url,
+      addresses: [],
+      wishlist: [],
+    };
 
-   await user.create(newUser);
-
-  },
+    await user.create(newUser);
+  }
 );
-
 
 const deleteUserFromDB = inngest.createFunction(
   { id: "delete-user-from-db" },
@@ -38,10 +35,9 @@ const deleteUserFromDB = inngest.createFunction(
   async ({ event }) => {
     await connectDB();
     const { id } = event.data;
-  await User.deleteOne({ clerkId:id });
+    await user.deleteOne({ clerkId: id });
   }
-  )
-
+);
 
 // Create an empty array where we'll export future Inngest functions
-export const functions = [syncUser,deleteUserFromDB];
+export const functions = [syncUser, deleteUserFromDB];
